@@ -67,6 +67,11 @@ export class IamAccessKey extends cdktf.TerraformResource {
     return this.getStringAttribute('encrypted_secret');
   }
 
+  // encrypted_ses_smtp_password_v4 - computed: true, optional: false, required: false
+  public get encryptedSesSmtpPasswordV4() {
+    return this.getStringAttribute('encrypted_ses_smtp_password_v4');
+  }
+
   // id - computed: true, optional: true, required: false
   public get id() {
     return this.getStringAttribute('id');

@@ -157,7 +157,34 @@ function cloudwatchEventTargetEcsTargetNetworkConfigurationToTerraform(struct?: 
   }
 }
 
+export interface CloudwatchEventTargetEcsTargetPlacementConstraint {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#expression CloudwatchEventTarget#expression}
+  */
+  readonly expression?: string;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#type CloudwatchEventTarget#type}
+  */
+  readonly type: string;
+}
+
+function cloudwatchEventTargetEcsTargetPlacementConstraintToTerraform(struct?: CloudwatchEventTargetEcsTargetPlacementConstraint): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    expression: cdktf.stringToTerraform(struct!.expression),
+    type: cdktf.stringToTerraform(struct!.type),
+  }
+}
+
 export interface CloudwatchEventTargetEcsTarget {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#enable_ecs_managed_tags CloudwatchEventTarget#enable_ecs_managed_tags}
+  */
+  readonly enableEcsManagedTags?: boolean;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#enable_execute_command CloudwatchEventTarget#enable_execute_command}
+  */
+  readonly enableExecuteCommand?: boolean;
   /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#group CloudwatchEventTarget#group}
   */
@@ -170,6 +197,14 @@ export interface CloudwatchEventTargetEcsTarget {
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#platform_version CloudwatchEventTarget#platform_version}
   */
   readonly platformVersion?: string;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#propagate_tags CloudwatchEventTarget#propagate_tags}
+  */
+  readonly propagateTags?: string;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#tags CloudwatchEventTarget#tags}
+  */
+  readonly tags?: { [key: string]: string };
   /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#task_count CloudwatchEventTarget#task_count}
   */
@@ -184,17 +219,28 @@ export interface CloudwatchEventTargetEcsTarget {
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#network_configuration CloudwatchEventTarget#network_configuration}
   */
   readonly networkConfiguration?: CloudwatchEventTargetEcsTargetNetworkConfiguration[];
+  /**
+  * placement_constraint block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_target.html#placement_constraint CloudwatchEventTarget#placement_constraint}
+  */
+  readonly placementConstraint?: CloudwatchEventTargetEcsTargetPlacementConstraint[];
 }
 
 function cloudwatchEventTargetEcsTargetToTerraform(struct?: CloudwatchEventTargetEcsTarget): any {
   if (!cdktf.canInspect(struct)) { return struct; }
   return {
+    enable_ecs_managed_tags: cdktf.booleanToTerraform(struct!.enableEcsManagedTags),
+    enable_execute_command: cdktf.booleanToTerraform(struct!.enableExecuteCommand),
     group: cdktf.stringToTerraform(struct!.group),
     launch_type: cdktf.stringToTerraform(struct!.launchType),
     platform_version: cdktf.stringToTerraform(struct!.platformVersion),
+    propagate_tags: cdktf.stringToTerraform(struct!.propagateTags),
+    tags: cdktf.hashMapper(cdktf.anyToTerraform)(struct!.tags),
     task_count: cdktf.numberToTerraform(struct!.taskCount),
     task_definition_arn: cdktf.stringToTerraform(struct!.taskDefinitionArn),
     network_configuration: cdktf.listMapper(cloudwatchEventTargetEcsTargetNetworkConfigurationToTerraform)(struct!.networkConfiguration),
+    placement_constraint: cdktf.listMapper(cloudwatchEventTargetEcsTargetPlacementConstraintToTerraform)(struct!.placementConstraint),
   }
 }
 

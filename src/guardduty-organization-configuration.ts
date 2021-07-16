@@ -15,7 +15,43 @@ export interface GuarddutyOrganizationConfigurationConfig extends cdktf.Terrafor
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_organization_configuration.html#detector_id GuarddutyOrganizationConfiguration#detector_id}
   */
   readonly detectorId: string;
+  /**
+  * datasources block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_organization_configuration.html#datasources GuarddutyOrganizationConfiguration#datasources}
+  */
+  readonly datasources?: GuarddutyOrganizationConfigurationDatasources[];
 }
+export interface GuarddutyOrganizationConfigurationDatasourcesS3Logs {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_organization_configuration.html#auto_enable GuarddutyOrganizationConfiguration#auto_enable}
+  */
+  readonly autoEnable: boolean;
+}
+
+function guarddutyOrganizationConfigurationDatasourcesS3LogsToTerraform(struct?: GuarddutyOrganizationConfigurationDatasourcesS3Logs): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    auto_enable: cdktf.booleanToTerraform(struct!.autoEnable),
+  }
+}
+
+export interface GuarddutyOrganizationConfigurationDatasources {
+  /**
+  * s3_logs block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_organization_configuration.html#s3_logs GuarddutyOrganizationConfiguration#s3_logs}
+  */
+  readonly s3Logs?: GuarddutyOrganizationConfigurationDatasourcesS3Logs[];
+}
+
+function guarddutyOrganizationConfigurationDatasourcesToTerraform(struct?: GuarddutyOrganizationConfigurationDatasources): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    s3_logs: cdktf.listMapper(guarddutyOrganizationConfigurationDatasourcesS3LogsToTerraform)(struct!.s3Logs),
+  }
+}
+
 
 /**
 * Represents a {@link https://www.terraform.io/docs/providers/aws/r/guardduty_organization_configuration.html aws_guardduty_organization_configuration}
@@ -46,6 +82,7 @@ export class GuarddutyOrganizationConfiguration extends cdktf.TerraformResource 
     });
     this._autoEnable = config.autoEnable;
     this._detectorId = config.detectorId;
+    this._datasources = config.datasources;
   }
 
   // ==========
@@ -83,6 +120,22 @@ export class GuarddutyOrganizationConfiguration extends cdktf.TerraformResource 
     return this.getStringAttribute('id');
   }
 
+  // datasources - computed: false, optional: true, required: false
+  private _datasources?: GuarddutyOrganizationConfigurationDatasources[];
+  public get datasources() {
+    return this.interpolationForAttribute('datasources') as any;
+  }
+  public set datasources(value: GuarddutyOrganizationConfigurationDatasources[] ) {
+    this._datasources = value;
+  }
+  public resetDatasources() {
+    this._datasources = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get datasourcesInput() {
+    return this._datasources
+  }
+
   // =========
   // SYNTHESIS
   // =========
@@ -91,6 +144,7 @@ export class GuarddutyOrganizationConfiguration extends cdktf.TerraformResource 
     return {
       auto_enable: cdktf.booleanToTerraform(this._autoEnable),
       detector_id: cdktf.stringToTerraform(this._detectorId),
+      datasources: cdktf.listMapper(guarddutyOrganizationConfigurationDatasourcesToTerraform)(this._datasources),
     };
   }
 }

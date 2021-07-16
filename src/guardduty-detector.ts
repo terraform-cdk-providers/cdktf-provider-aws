@@ -23,7 +23,43 @@ export interface GuarddutyDetectorConfig extends cdktf.TerraformMetaArguments {
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_detector.html#tags_all GuarddutyDetector#tags_all}
   */
   readonly tagsAll?: { [key: string]: string };
+  /**
+  * datasources block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_detector.html#datasources GuarddutyDetector#datasources}
+  */
+  readonly datasources?: GuarddutyDetectorDatasources[];
 }
+export interface GuarddutyDetectorDatasourcesS3Logs {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_detector.html#enable GuarddutyDetector#enable}
+  */
+  readonly enable: boolean;
+}
+
+function guarddutyDetectorDatasourcesS3LogsToTerraform(struct?: GuarddutyDetectorDatasourcesS3Logs): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    enable: cdktf.booleanToTerraform(struct!.enable),
+  }
+}
+
+export interface GuarddutyDetectorDatasources {
+  /**
+  * s3_logs block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/guardduty_detector.html#s3_logs GuarddutyDetector#s3_logs}
+  */
+  readonly s3Logs?: GuarddutyDetectorDatasourcesS3Logs[];
+}
+
+function guarddutyDetectorDatasourcesToTerraform(struct?: GuarddutyDetectorDatasources): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    s3_logs: cdktf.listMapper(guarddutyDetectorDatasourcesS3LogsToTerraform)(struct!.s3Logs),
+  }
+}
+
 
 /**
 * Represents a {@link https://www.terraform.io/docs/providers/aws/r/guardduty_detector.html aws_guardduty_detector}
@@ -56,6 +92,7 @@ export class GuarddutyDetector extends cdktf.TerraformResource {
     this._findingPublishingFrequency = config.findingPublishingFrequency;
     this._tags = config.tags;
     this._tagsAll = config.tagsAll;
+    this._datasources = config.datasources;
   }
 
   // ==========
@@ -141,6 +178,22 @@ export class GuarddutyDetector extends cdktf.TerraformResource {
     return this._tagsAll
   }
 
+  // datasources - computed: false, optional: true, required: false
+  private _datasources?: GuarddutyDetectorDatasources[];
+  public get datasources() {
+    return this.interpolationForAttribute('datasources') as any;
+  }
+  public set datasources(value: GuarddutyDetectorDatasources[] ) {
+    this._datasources = value;
+  }
+  public resetDatasources() {
+    this._datasources = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get datasourcesInput() {
+    return this._datasources
+  }
+
   // =========
   // SYNTHESIS
   // =========
@@ -151,6 +204,7 @@ export class GuarddutyDetector extends cdktf.TerraformResource {
       finding_publishing_frequency: cdktf.stringToTerraform(this._findingPublishingFrequency),
       tags: cdktf.hashMapper(cdktf.anyToTerraform)(this._tags),
       tags_all: cdktf.hashMapper(cdktf.anyToTerraform)(this._tagsAll),
+      datasources: cdktf.listMapper(guarddutyDetectorDatasourcesToTerraform)(this._datasources),
     };
   }
 }

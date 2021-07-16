@@ -60,6 +60,10 @@ export interface SpotInstanceRequestConfig extends cdktf.TerraformMetaArguments 
   */
   readonly instanceInitiatedShutdownBehavior?: string;
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/spot_instance_request.html#instance_interruption_behavior SpotInstanceRequest#instance_interruption_behavior}
+  */
+  readonly instanceInterruptionBehavior?: string;
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/spot_instance_request.html#instance_interruption_behaviour SpotInstanceRequest#instance_interruption_behaviour}
   */
   readonly instanceInterruptionBehaviour?: string;
@@ -517,6 +521,7 @@ export class SpotInstanceRequest extends cdktf.TerraformResource {
     this._hostId = config.hostId;
     this._iamInstanceProfile = config.iamInstanceProfile;
     this._instanceInitiatedShutdownBehavior = config.instanceInitiatedShutdownBehavior;
+    this._instanceInterruptionBehavior = config.instanceInterruptionBehavior;
     this._instanceInterruptionBehaviour = config.instanceInterruptionBehaviour;
     this._instanceType = config.instanceType;
     this._ipv6AddressCount = config.ipv6AddressCount;
@@ -772,12 +777,28 @@ export class SpotInstanceRequest extends cdktf.TerraformResource {
     return this._instanceInitiatedShutdownBehavior
   }
 
-  // instance_interruption_behaviour - computed: false, optional: true, required: false
+  // instance_interruption_behavior - computed: true, optional: true, required: false
+  private _instanceInterruptionBehavior?: string;
+  public get instanceInterruptionBehavior() {
+    return this.getStringAttribute('instance_interruption_behavior');
+  }
+  public set instanceInterruptionBehavior(value: string) {
+    this._instanceInterruptionBehavior = value;
+  }
+  public resetInstanceInterruptionBehavior() {
+    this._instanceInterruptionBehavior = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get instanceInterruptionBehaviorInput() {
+    return this._instanceInterruptionBehavior
+  }
+
+  // instance_interruption_behaviour - computed: true, optional: true, required: false
   private _instanceInterruptionBehaviour?: string;
   public get instanceInterruptionBehaviour() {
     return this.getStringAttribute('instance_interruption_behaviour');
   }
-  public set instanceInterruptionBehaviour(value: string ) {
+  public set instanceInterruptionBehaviour(value: string) {
     this._instanceInterruptionBehaviour = value;
   }
   public resetInstanceInterruptionBehaviour() {
@@ -1382,6 +1403,7 @@ export class SpotInstanceRequest extends cdktf.TerraformResource {
       host_id: cdktf.stringToTerraform(this._hostId),
       iam_instance_profile: cdktf.stringToTerraform(this._iamInstanceProfile),
       instance_initiated_shutdown_behavior: cdktf.stringToTerraform(this._instanceInitiatedShutdownBehavior),
+      instance_interruption_behavior: cdktf.stringToTerraform(this._instanceInterruptionBehavior),
       instance_interruption_behaviour: cdktf.stringToTerraform(this._instanceInterruptionBehaviour),
       instance_type: cdktf.stringToTerraform(this._instanceType),
       ipv6_address_count: cdktf.numberToTerraform(this._ipv6AddressCount),

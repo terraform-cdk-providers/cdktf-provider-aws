@@ -32,6 +32,10 @@ export interface CognitoUserPoolClientConfig extends cdktf.TerraformMetaArgument
   */
   readonly defaultRedirectUri?: string;
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cognito_user_pool_client.html#enable_token_revocation CognitoUserPoolClient#enable_token_revocation}
+  */
+  readonly enableTokenRevocation?: boolean;
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/cognito_user_pool_client.html#explicit_auth_flows CognitoUserPoolClient#explicit_auth_flows}
   */
   readonly explicitAuthFlows?: string[];
@@ -180,6 +184,7 @@ export class CognitoUserPoolClient extends cdktf.TerraformResource {
     this._allowedOauthScopes = config.allowedOauthScopes;
     this._callbackUrls = config.callbackUrls;
     this._defaultRedirectUri = config.defaultRedirectUri;
+    this._enableTokenRevocation = config.enableTokenRevocation;
     this._explicitAuthFlows = config.explicitAuthFlows;
     this._generateSecret = config.generateSecret;
     this._idTokenValidity = config.idTokenValidity;
@@ -298,6 +303,22 @@ export class CognitoUserPoolClient extends cdktf.TerraformResource {
   // Temporarily expose input value. Use with caution.
   public get defaultRedirectUriInput() {
     return this._defaultRedirectUri
+  }
+
+  // enable_token_revocation - computed: true, optional: true, required: false
+  private _enableTokenRevocation?: boolean;
+  public get enableTokenRevocation() {
+    return this.getBooleanAttribute('enable_token_revocation');
+  }
+  public set enableTokenRevocation(value: boolean) {
+    this._enableTokenRevocation = value;
+  }
+  public resetEnableTokenRevocation() {
+    this._enableTokenRevocation = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get enableTokenRevocationInput() {
+    return this._enableTokenRevocation
   }
 
   // explicit_auth_flows - computed: false, optional: true, required: false
@@ -519,6 +540,7 @@ export class CognitoUserPoolClient extends cdktf.TerraformResource {
       allowed_oauth_scopes: cdktf.listMapper(cdktf.stringToTerraform)(this._allowedOauthScopes),
       callback_urls: cdktf.listMapper(cdktf.stringToTerraform)(this._callbackUrls),
       default_redirect_uri: cdktf.stringToTerraform(this._defaultRedirectUri),
+      enable_token_revocation: cdktf.booleanToTerraform(this._enableTokenRevocation),
       explicit_auth_flows: cdktf.listMapper(cdktf.stringToTerraform)(this._explicitAuthFlows),
       generate_secret: cdktf.booleanToTerraform(this._generateSecret),
       id_token_validity: cdktf.numberToTerraform(this._idTokenValidity),
