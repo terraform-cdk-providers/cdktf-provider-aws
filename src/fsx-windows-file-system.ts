@@ -12,6 +12,10 @@ export interface FsxWindowsFileSystemConfig extends cdktf.TerraformMetaArguments
   */
   readonly activeDirectoryId?: string;
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#aliases FsxWindowsFileSystem#aliases}
+  */
+  readonly aliases?: string[];
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#automatic_backup_retention_days FsxWindowsFileSystem#automatic_backup_retention_days}
   */
   readonly automaticBackupRetentionDays?: number;
@@ -72,6 +76,12 @@ export interface FsxWindowsFileSystemConfig extends cdktf.TerraformMetaArguments
   */
   readonly weeklyMaintenanceStartTime?: string;
   /**
+  * audit_log_configuration block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#audit_log_configuration FsxWindowsFileSystem#audit_log_configuration}
+  */
+  readonly auditLogConfiguration?: FsxWindowsFileSystemAuditLogConfiguration[];
+  /**
   * self_managed_active_directory block
   * 
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#self_managed_active_directory FsxWindowsFileSystem#self_managed_active_directory}
@@ -84,6 +94,30 @@ export interface FsxWindowsFileSystemConfig extends cdktf.TerraformMetaArguments
   */
   readonly timeouts?: FsxWindowsFileSystemTimeouts;
 }
+export interface FsxWindowsFileSystemAuditLogConfiguration {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#audit_log_destination FsxWindowsFileSystem#audit_log_destination}
+  */
+  readonly auditLogDestination?: string;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#file_access_audit_log_level FsxWindowsFileSystem#file_access_audit_log_level}
+  */
+  readonly fileAccessAuditLogLevel?: string;
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#file_share_access_audit_log_level FsxWindowsFileSystem#file_share_access_audit_log_level}
+  */
+  readonly fileShareAccessAuditLogLevel?: string;
+}
+
+function fsxWindowsFileSystemAuditLogConfigurationToTerraform(struct?: FsxWindowsFileSystemAuditLogConfiguration): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    audit_log_destination: cdktf.stringToTerraform(struct!.auditLogDestination),
+    file_access_audit_log_level: cdktf.stringToTerraform(struct!.fileAccessAuditLogLevel),
+    file_share_access_audit_log_level: cdktf.stringToTerraform(struct!.fileShareAccessAuditLogLevel),
+  }
+}
+
 export interface FsxWindowsFileSystemSelfManagedActiveDirectory {
   /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/fsx_windows_file_system.html#dns_ips FsxWindowsFileSystem#dns_ips}
@@ -176,6 +210,7 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
       lifecycle: config.lifecycle
     });
     this._activeDirectoryId = config.activeDirectoryId;
+    this._aliases = config.aliases;
     this._automaticBackupRetentionDays = config.automaticBackupRetentionDays;
     this._copyTagsToBackups = config.copyTagsToBackups;
     this._dailyAutomaticBackupStartTime = config.dailyAutomaticBackupStartTime;
@@ -191,6 +226,7 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
     this._tagsAll = config.tagsAll;
     this._throughputCapacity = config.throughputCapacity;
     this._weeklyMaintenanceStartTime = config.weeklyMaintenanceStartTime;
+    this._auditLogConfiguration = config.auditLogConfiguration;
     this._selfManagedActiveDirectory = config.selfManagedActiveDirectory;
     this._timeouts = config.timeouts;
   }
@@ -213,6 +249,22 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
   // Temporarily expose input value. Use with caution.
   public get activeDirectoryIdInput() {
     return this._activeDirectoryId
+  }
+
+  // aliases - computed: false, optional: true, required: false
+  private _aliases?: string[];
+  public get aliases() {
+    return this.getListAttribute('aliases');
+  }
+  public set aliases(value: string[] ) {
+    this._aliases = value;
+  }
+  public resetAliases() {
+    this._aliases = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get aliasesInput() {
+    return this._aliases
   }
 
   // arn - computed: true, optional: false, required: false
@@ -486,6 +538,22 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
     return this._weeklyMaintenanceStartTime
   }
 
+  // audit_log_configuration - computed: false, optional: true, required: false
+  private _auditLogConfiguration?: FsxWindowsFileSystemAuditLogConfiguration[];
+  public get auditLogConfiguration() {
+    return this.interpolationForAttribute('audit_log_configuration') as any;
+  }
+  public set auditLogConfiguration(value: FsxWindowsFileSystemAuditLogConfiguration[] ) {
+    this._auditLogConfiguration = value;
+  }
+  public resetAuditLogConfiguration() {
+    this._auditLogConfiguration = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get auditLogConfigurationInput() {
+    return this._auditLogConfiguration
+  }
+
   // self_managed_active_directory - computed: false, optional: true, required: false
   private _selfManagedActiveDirectory?: FsxWindowsFileSystemSelfManagedActiveDirectory[];
   public get selfManagedActiveDirectory() {
@@ -525,6 +593,7 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
   protected synthesizeAttributes(): { [name: string]: any } {
     return {
       active_directory_id: cdktf.stringToTerraform(this._activeDirectoryId),
+      aliases: cdktf.listMapper(cdktf.stringToTerraform)(this._aliases),
       automatic_backup_retention_days: cdktf.numberToTerraform(this._automaticBackupRetentionDays),
       copy_tags_to_backups: cdktf.booleanToTerraform(this._copyTagsToBackups),
       daily_automatic_backup_start_time: cdktf.stringToTerraform(this._dailyAutomaticBackupStartTime),
@@ -540,6 +609,7 @@ export class FsxWindowsFileSystem extends cdktf.TerraformResource {
       tags_all: cdktf.hashMapper(cdktf.anyToTerraform)(this._tagsAll),
       throughput_capacity: cdktf.numberToTerraform(this._throughputCapacity),
       weekly_maintenance_start_time: cdktf.stringToTerraform(this._weeklyMaintenanceStartTime),
+      audit_log_configuration: cdktf.listMapper(fsxWindowsFileSystemAuditLogConfigurationToTerraform)(this._auditLogConfiguration),
       self_managed_active_directory: cdktf.listMapper(fsxWindowsFileSystemSelfManagedActiveDirectoryToTerraform)(this._selfManagedActiveDirectory),
       timeouts: fsxWindowsFileSystemTimeoutsToTerraform(this._timeouts),
     };

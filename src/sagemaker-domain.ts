@@ -45,6 +45,12 @@ export interface SagemakerDomainConfig extends cdktf.TerraformMetaArguments {
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/sagemaker_domain.html#default_user_settings SagemakerDomain#default_user_settings}
   */
   readonly defaultUserSettings: SagemakerDomainDefaultUserSettings[];
+  /**
+  * retention_policy block
+  * 
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/sagemaker_domain.html#retention_policy SagemakerDomain#retention_policy}
+  */
+  readonly retentionPolicy?: SagemakerDomainRetentionPolicy[];
 }
 export interface SagemakerDomainDefaultUserSettingsJupyterServerAppSettingsDefaultResourceSpec {
   /**
@@ -253,6 +259,20 @@ function sagemakerDomainDefaultUserSettingsToTerraform(struct?: SagemakerDomainD
   }
 }
 
+export interface SagemakerDomainRetentionPolicy {
+  /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/sagemaker_domain.html#home_efs_file_system SagemakerDomain#home_efs_file_system}
+  */
+  readonly homeEfsFileSystem?: string;
+}
+
+function sagemakerDomainRetentionPolicyToTerraform(struct?: SagemakerDomainRetentionPolicy): any {
+  if (!cdktf.canInspect(struct)) { return struct; }
+  return {
+    home_efs_file_system: cdktf.stringToTerraform(struct!.homeEfsFileSystem),
+  }
+}
+
 
 /**
 * Represents a {@link https://www.terraform.io/docs/providers/aws/r/sagemaker_domain.html aws_sagemaker_domain}
@@ -290,6 +310,7 @@ export class SagemakerDomain extends cdktf.TerraformResource {
     this._tagsAll = config.tagsAll;
     this._vpcId = config.vpcId;
     this._defaultUserSettings = config.defaultUserSettings;
+    this._retentionPolicy = config.retentionPolicy;
   }
 
   // ==========
@@ -450,6 +471,22 @@ export class SagemakerDomain extends cdktf.TerraformResource {
     return this._defaultUserSettings
   }
 
+  // retention_policy - computed: false, optional: true, required: false
+  private _retentionPolicy?: SagemakerDomainRetentionPolicy[];
+  public get retentionPolicy() {
+    return this.interpolationForAttribute('retention_policy') as any;
+  }
+  public set retentionPolicy(value: SagemakerDomainRetentionPolicy[] ) {
+    this._retentionPolicy = value;
+  }
+  public resetRetentionPolicy() {
+    this._retentionPolicy = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get retentionPolicyInput() {
+    return this._retentionPolicy
+  }
+
   // =========
   // SYNTHESIS
   // =========
@@ -465,6 +502,7 @@ export class SagemakerDomain extends cdktf.TerraformResource {
       tags_all: cdktf.hashMapper(cdktf.anyToTerraform)(this._tagsAll),
       vpc_id: cdktf.stringToTerraform(this._vpcId),
       default_user_settings: cdktf.listMapper(sagemakerDomainDefaultUserSettingsToTerraform)(this._defaultUserSettings),
+      retention_policy: cdktf.listMapper(sagemakerDomainRetentionPolicyToTerraform)(this._retentionPolicy),
     };
   }
 }

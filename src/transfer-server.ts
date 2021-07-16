@@ -72,6 +72,10 @@ export interface TransferServerEndpointDetails {
   */
   readonly addressAllocationIds?: string[];
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/transfer_server.html#security_group_ids TransferServer#security_group_ids}
+  */
+  readonly securityGroupIds?: string[];
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/transfer_server.html#subnet_ids TransferServer#subnet_ids}
   */
   readonly subnetIds?: string[];
@@ -89,6 +93,7 @@ function transferServerEndpointDetailsToTerraform(struct?: TransferServerEndpoin
   if (!cdktf.canInspect(struct)) { return struct; }
   return {
     address_allocation_ids: cdktf.listMapper(cdktf.stringToTerraform)(struct!.addressAllocationIds),
+    security_group_ids: cdktf.listMapper(cdktf.stringToTerraform)(struct!.securityGroupIds),
     subnet_ids: cdktf.listMapper(cdktf.stringToTerraform)(struct!.subnetIds),
     vpc_endpoint_id: cdktf.stringToTerraform(struct!.vpcEndpointId),
     vpc_id: cdktf.stringToTerraform(struct!.vpcId),

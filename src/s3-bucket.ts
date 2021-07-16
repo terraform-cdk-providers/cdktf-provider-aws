@@ -497,6 +497,10 @@ function s3BucketReplicationConfigurationRulesSourceSelectionCriteriaToTerraform
 
 export interface S3BucketReplicationConfigurationRules {
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/s3_bucket.html#delete_marker_replication_status S3Bucket#delete_marker_replication_status}
+  */
+  readonly deleteMarkerReplicationStatus?: string;
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/s3_bucket.html#id S3Bucket#id}
   */
   readonly id?: string;
@@ -535,6 +539,7 @@ export interface S3BucketReplicationConfigurationRules {
 function s3BucketReplicationConfigurationRulesToTerraform(struct?: S3BucketReplicationConfigurationRules): any {
   if (!cdktf.canInspect(struct)) { return struct; }
   return {
+    delete_marker_replication_status: cdktf.stringToTerraform(struct!.deleteMarkerReplicationStatus),
     id: cdktf.stringToTerraform(struct!.id),
     prefix: cdktf.stringToTerraform(struct!.prefix),
     priority: cdktf.numberToTerraform(struct!.priority),

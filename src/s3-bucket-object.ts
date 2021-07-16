@@ -88,6 +88,10 @@ export interface S3BucketObjectConfig extends cdktf.TerraformMetaArguments {
   */
   readonly source?: string;
   /**
+  * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/s3_bucket_object.html#source_hash S3BucketObject#source_hash}
+  */
+  readonly sourceHash?: string;
+  /**
   * Docs at Terraform Registry: {@link https://www.terraform.io/docs/providers/aws/r/s3_bucket_object.html#storage_class S3BucketObject#storage_class}
   */
   readonly storageClass?: string;
@@ -152,6 +156,7 @@ export class S3BucketObject extends cdktf.TerraformResource {
     this._objectLockRetainUntilDate = config.objectLockRetainUntilDate;
     this._serverSideEncryption = config.serverSideEncryption;
     this._source = config.source;
+    this._sourceHash = config.sourceHash;
     this._storageClass = config.storageClass;
     this._tags = config.tags;
     this._tagsAll = config.tagsAll;
@@ -481,6 +486,22 @@ export class S3BucketObject extends cdktf.TerraformResource {
     return this._source
   }
 
+  // source_hash - computed: false, optional: true, required: false
+  private _sourceHash?: string;
+  public get sourceHash() {
+    return this.getStringAttribute('source_hash');
+  }
+  public set sourceHash(value: string ) {
+    this._sourceHash = value;
+  }
+  public resetSourceHash() {
+    this._sourceHash = undefined;
+  }
+  // Temporarily expose input value. Use with caution.
+  public get sourceHashInput() {
+    return this._sourceHash
+  }
+
   // storage_class - computed: true, optional: true, required: false
   private _storageClass?: string;
   public get storageClass() {
@@ -576,6 +597,7 @@ export class S3BucketObject extends cdktf.TerraformResource {
       object_lock_retain_until_date: cdktf.stringToTerraform(this._objectLockRetainUntilDate),
       server_side_encryption: cdktf.stringToTerraform(this._serverSideEncryption),
       source: cdktf.stringToTerraform(this._source),
+      source_hash: cdktf.stringToTerraform(this._sourceHash),
       storage_class: cdktf.stringToTerraform(this._storageClass),
       tags: cdktf.hashMapper(cdktf.anyToTerraform)(this._tags),
       tags_all: cdktf.hashMapper(cdktf.anyToTerraform)(this._tagsAll),
